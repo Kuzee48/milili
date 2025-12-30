@@ -4,6 +4,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'p16-novel-sign-sg.fizzopic.org' },
       { protocol: 'https', hostname: 'p19-novel-sign-sg.fizzopic.org' },
+      { protocol: 'https', hostname: 'p16-sign-sg.tiktokcdn.com' },
     ],
   },
 };
