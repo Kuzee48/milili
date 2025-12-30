@@ -3,28 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 2, 6, 23;
-  --background-end-rgb: 0, 0, 0;
+  --background: 2, 6, 23; /* Slate 950 */
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background));
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Fix link warna biru bawaan browser */
+a {
+  color: inherit !important;
+  text-decoration: none !important;
 }
-::-webkit-scrollbar-track {
-  background: #020617;
+
+/* Salju di Background */
+.snowflake {
+  position: fixed;
+  top: -5vh;
+  z-index: -5; /* Taruh paling belakang */
+  color: white;
+  opacity: 0.2;
+  pointer-events: none;
+  animation: fall linear infinite;
 }
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 10px;
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(360deg); }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #22d3ee;
-}
+
+/* Custom Scrollbar Premium */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
