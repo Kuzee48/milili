@@ -1,15 +1,25 @@
+export const dynamic = 'force-dynamic';
+
 import { searchDramas } from "@/lib/api";
 import Link from "next/link";
+import MovieCard from "@/components/MovieCard";
 
 export default async function SearchPage({ searchParams }) {
-  const query = searchParams.q || "";
-  const response = await searchDramas(query);
-  const results = response.data.search_data || [];
+  // Pastikan q diambil dengan benar dari query string
+  const query = searchParams?.q || "";
+  let results = [];
+
+  try {
+    const response = await searchDramas(query);
+    results = response?.data?.search_data || [];
+  } catch (error) {
+    results = [];
+  }
 
   return (
     <div className="px-6 md:px-12">
       <div className="mb-10">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-white">
           Hasil pencarian untuk: <span className="text-cyan-400">"{query}"</span>
         </h1>
         <p className="text-slate-500 text-sm mt-1">Ditemukan {results.length} drama ajaib</p>
@@ -17,21 +27,13 @@ export default async function SearchPage({ searchParams }) {
 
       {results.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {results.map((item) => {
-            const book = item.books[0];
+          {results.map((item, idx) => {
+            // Mengambil buku pertama dari setiap hasil pencarian
+            const book = item.books?.[0];
+            if (!book) return null;
+
             return (
-              <Link href={`/detail/${book.book_id}`} key={book.book_id} className="group">
-                <div className="aspect-[3/4] overflow-hidden rounded-2xl border border-white/10 bg-slate-900 transition-all group-hover:border-cyan-500 shadow-lg">
-                  <img 
-                    src={book.thumb_url} 
-                    alt={book.book_name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  />
-                </div>
-                <h3 className="mt-3 text-sm font-semibold truncate group-hover:text-cyan-400 transition-colors">
-                  {book.book_name}
-                </h3>
-              </Link>
+              <MovieCard key={book.book_id || idx} book={book} />
             );
           })}
         </div>
@@ -42,4 +44,4 @@ export default async function SearchPage({ searchParams }) {
       )}
     </div>
   );
-        }
+                       }
