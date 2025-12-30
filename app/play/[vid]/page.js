@@ -1,9 +1,21 @@
+export const dynamic = 'force-dynamic';
+
 import { getStream } from "@/lib/api";
 
 export default async function PlayerPage({ params }) {
   const { vid } = params;
   const streamResponse = await getStream(vid);
-  const videoSrc = streamResponse.data.main_url;
+  
+  // Ambil URL utama, jika tidak ada gunakan backup_url
+  const videoSrc = streamResponse?.data?.main_url || streamResponse?.data?.backup_url;
+
+  if (!videoSrc) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-slate-400">
+        <p className="italic">Video tidak dapat dimuat atau telah kedaluwarsa.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center px-6 min-h-[70vh]">
@@ -13,6 +25,7 @@ export default async function PlayerPage({ params }) {
           controls 
           className="w-full h-full"
           autoPlay
+          playsInline
         />
       </div>
       <div className="mt-10 text-center">
