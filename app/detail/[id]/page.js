@@ -1,40 +1,49 @@
 export const dynamic = 'force-dynamic';
 import { getDetail } from "@/lib/api";
 import Link from "next/link";
-import { List, Play } from "lucide-react";
+import { List } from "lucide-react";
 
 export default async function DetailPage({ params }) {
   const response = await getDetail(params.id);
   const data = response?.data?.video_data;
 
-  if (!data) return <div className="p-10 text-center text-slate-500">Drama menghilang di badai salju...</div>;
+  if (!data) return <div className="p-20 text-center text-slate-500 font-italic">Drama membeku di musim dingin...</div>;
+
+  const proxiedCover = `/api/image?url=${encodeURIComponent(data.series_cover)}`;
 
   return (
-    <div className="min-h-screen pb-20">
-      {/* Hero Section */}
-      <div className="relative w-full h-[40vh] md:h-[50vh]">
-        <img src={data.series_cover} referrerPolicy="no-referrer" className="w-full h-full object-cover blur-sm opacity-30" alt="" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#020617]" />
-        <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-6">
-          <img src={data.series_cover} referrerPolicy="no-referrer" className="w-32 md:w-44 rounded-xl shadow-2xl border-2 border-white/20 mb-4" alt={data.series_title} />
-          <h1 className="text-2xl md:text-4xl font-black text-center text-white">{data.series_title}</h1>
-        </div>
+    <div className="min-h-screen">
+      {/* Background Banner */}
+      <div className="fixed top-0 left-0 w-full h-[60vh] -z-10 opacity-20 blur-2xl">
+        <img src={proxiedCover} className="w-full h-full object-cover" alt="" />
       </div>
 
-      {/* Konten */}
-      <div className="px-6 max-w-4xl mx-auto mt-6">
-        <p className="text-slate-400 text-sm text-center italic mb-8">"{data.series_intro}"</p>
-        
-        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl p-6 border border-white/5">
-          <h2 className="flex items-center gap-2 text-lg font-bold mb-6 text-cyan-400">
-            <List className="w-5 h-5" /> Daftar Episode ({data.episode_cnt})
+      <div className="max-w-5xl mx-auto px-6 pt-10 pb-20">
+        <div className="flex flex-col items-center text-center mb-12">
+          <img 
+            src={proxiedCover} 
+            className="w-48 md:w-64 rounded-3xl shadow-[0_0_50px_rgba(34,211,238,0.2)] border-4 border-white/10 mb-8" 
+            alt={data.series_title} 
+          />
+          <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter drop-shadow-xl">
+            {data.series_title}
+          </h1>
+          <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed italic">
+            "{data.series_intro}"
+          </p>
+        </div>
+
+        {/* Episode Grid */}
+        <div className="bg-slate-900/60 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 border border-white/5 shadow-2xl">
+          <h2 className="flex items-center justify-center gap-3 text-2xl font-black mb-10 text-cyan-400 uppercase tracking-widest">
+            <List className="w-6 h-6" /> Episode List
           </h2>
-          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
             {(data.video_list || []).map((ep) => (
               <Link 
                 href={`/play/${ep.vid}`} 
                 key={ep.vid}
-                className="aspect-square flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-600 transition-all font-bold text-white text-xs border border-white/10"
+                className="aspect-square flex items-center justify-center rounded-2xl bg-white/5 hover:bg-cyan-500 hover:scale-110 transition-all font-bold text-white shadow-lg border border-white/5"
               >
                 {ep.vid_index}
               </Link>
@@ -44,4 +53,4 @@ export default async function DetailPage({ params }) {
       </div>
     </div>
   );
-}
+    }
